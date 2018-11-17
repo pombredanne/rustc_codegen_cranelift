@@ -172,6 +172,24 @@ impl PartialEq for u8 {
     }
 }
 
+impl PartialEq for u16 {
+    fn eq(&self, other: &u16) -> bool {
+        (*self) == (*other)
+    }
+    fn ne(&self, other: &u16) -> bool {
+        (*self) != (*other)
+    }
+}
+
+impl PartialEq for u32 {
+    fn eq(&self, other: &u32) -> bool {
+        (*self) == (*other)
+    }
+    fn ne(&self, other: &u32) -> bool {
+        (*self) != (*other)
+    }
+}
+
 impl PartialEq for char {
     fn eq(&self, other: &char) -> bool {
         (*self) == (*other)
@@ -278,6 +296,8 @@ pub mod intrinsics {
         pub fn uninit<T>() -> T;
         pub fn ctlz_nonzero<T>(x: T) -> T;
         pub fn needs_drop<T>() -> bool;
+        pub fn bitreverse<T>(x: T) -> T;
+        pub fn bswap<T>(x: T) -> T;
     }
 }
 
