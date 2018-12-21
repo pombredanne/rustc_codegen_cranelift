@@ -18,10 +18,10 @@ $RUSTC example/mini_core_hello_world.rs --crate-name mini_core_hello_world --cra
 sh -c ./target/out/mini_core_hello_world
 
 echo "[BUILD] sysroot"
-time ./build_sysroot/build_sysroot.sh
+time ./build_sysroot/build_sysroot.sh --release
 
 echo "[BUILD+RUN] alloc_example"
-$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin
+$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3
 ./target/out/alloc_example
 
 echo "[BUILD] mod_bench"
