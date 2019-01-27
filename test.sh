@@ -21,7 +21,7 @@ echo "[BUILD] sysroot"
 time ./build_sysroot/build_sysroot.sh --release
 
 echo "[BUILD+RUN] alloc_example"
-$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3
+$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3 -g
 ./target/out/alloc_example
 
 echo "[BUILD] mod_bench"
