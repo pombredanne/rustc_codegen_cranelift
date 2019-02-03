@@ -23,7 +23,7 @@ mkdir -p sysroot/lib/rustlib/$TARGET_TRIPLE/lib/
 export RUSTFLAGS="$RUSTFLAGS -Z force-unstable-if-unmarked --sysroot sysroot"
 if [[ "$1" == "--release" ]]; then
     channel='release'
-    RUSTFLAGS="$RUSTFLAGS -Zmir-opt-level=3" cargo build --target $TARGET_TRIPLE --release
+    RUSTFLAGS="$RUSTFLAGS" cargo build --target $TARGET_TRIPLE --release
 else
     channel='debug'
     cargo build --target $TARGET_TRIPLE
