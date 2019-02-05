@@ -11,17 +11,17 @@ echo "[BUILD] example"
 $RUSTC example/example.rs --crate-type lib
 
 echo "[JIT] mini_core_hello_world"
-SHOULD_RUN=1 $RUSTC --crate-type bin example/mini_core_hello_world.rs --cfg jit
+#SHOULD_RUN=1 $RUSTC --crate-type bin example/mini_core_hello_world.rs --cfg jit
 
 echo "[AOT] mini_core_hello_world"
-$RUSTC example/mini_core_hello_world.rs --crate-name mini_core_hello_world --crate-type bin
-sh -c ./target/out/mini_core_hello_world
+#$RUSTC example/mini_core_hello_world.rs --crate-name mini_core_hello_world --crate-type bin
+#sh -c ./target/out/mini_core_hello_world
 
 echo "[BUILD] sysroot"
-time ./build_sysroot/build_sysroot.sh --release
+time ./build_sysroot/build_sysroot.sh
 
 echo "[BUILD+RUN] alloc_example"
-$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3 -g
+$RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3
 ./target/out/alloc_example
 
 echo "[BUILD] mod_bench"
