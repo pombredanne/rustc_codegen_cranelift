@@ -13,9 +13,13 @@ extern "C" {
 }
 
 fn main() {
-
+    ::std::iter::repeat('a' as u8).take(10).collect::<Vec<_>>();
     let stderr = ::std::io::stderr();
     let mut stderr = stderr.lock();
+    
+    writeln!(stderr, "thread 'feiof{}' panicked at ...", "<unknown>").unwrap();
+    stderr.flush().unwrap();
+
     let mut output = Adaptor { inner: &mut stderr, error: Ok(()) };
     match fmt::write(&mut output, format_args!("athread '{}' panicked at ...", "<unknown>")) {
         Ok(()) => {},
@@ -23,6 +27,7 @@ fn main() {
             unsafe { std::intrinsics::abort(); }
         }
     };
+
 }
 
 struct Adaptor<'a, T: ?Sized + 'a> {
@@ -32,10 +37,10 @@ struct Adaptor<'a, T: ?Sized + 'a> {
 
 impl<'a, T: io::Write + ?Sized> fmt::Write for Adaptor<'a, T> {
     fn write_str(&mut self, s: &str) -> fmt::Result {
-        unsafe { puts("before\0" as *const str as *const u8); }
+//        unsafe { puts("before\0" as *const str as *const u8); }
         match self.inner.write_all(s.as_bytes()) {
             Ok(()) => {
-                unsafe { puts("after\0" as *const str as *const u8); }
+//                unsafe { puts("after\0" as *const str as *const u8); }
                 Ok(())
             }
             Err(e) => {
