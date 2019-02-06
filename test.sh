@@ -24,6 +24,10 @@ echo "[BUILD+RUN] alloc_example"
 $RUSTC --sysroot ./build_sysroot/sysroot example/alloc_example.rs --crate-type bin -Copt-level=3
 ./target/out/alloc_example
 
+echo "[BUILD+RUN] std_example"
+$RUSTC --sysroot ./build_sysroot/sysroot example/std_example.rs --crate-type bin
+./target/out/std_example
+
 echo "[BUILD] mod_bench"
 $RUSTC --sysroot ./build_sysroot/sysroot example/mod_bench.rs --crate-type bin
 
