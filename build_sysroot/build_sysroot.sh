@@ -3,8 +3,8 @@ set -e
 cd $(dirname "$0")
 
 # Cleanup for previous run
-#cargo clean
-#rm Cargo.lock 2>/dev/null || true
+cargo clean
+rm Cargo.lock 2>/dev/null || true
 rm -r sysroot 2>/dev/null || true
 
 # FIXME find a better way to get the target triple
@@ -23,7 +23,7 @@ mkdir -p sysroot/lib/rustlib/$TARGET_TRIPLE/lib/
 export RUSTFLAGS="$RUSTFLAGS -Z force-unstable-if-unmarked --sysroot sysroot"
 if [[ "$1" == "--release" ]]; then
     channel='release'
-    RUSTFLAGS="$RUSTFLAGS" cargo build --target $TARGET_TRIPLE --release
+    RUSTFLAGS="$RUSTFLAGS -Zmir-opt-level=3" cargo build --target $TARGET_TRIPLE --release
 else
     channel='debug'
     cargo build --target $TARGET_TRIPLE
