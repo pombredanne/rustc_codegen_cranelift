@@ -285,6 +285,49 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
             ret.write_cvalue(fx, CValue::ByVal(res, layout));
         };
 
+        _ if intrinsic.starts_with("saturating_"), <T> (c x, c y) {
+            // FIXME implement saturating part
+            assert_eq!(x.layout().ty, y.layout().ty);
+            let bin_op = match intrinsic {
+                "saturating_add" => BinOp::Add,
+                "saturating_sub" => BinOp::Sub,
+                "saturating_mul" => BinOp::Mul,
+                _ => unimplemented!("intrinsic {}", intrinsic),
+            };
+            let res = match T.sty {
+                ty::Uint(_) => crate::base::trans_int_binop(
+                    fx,
+                    bin_op,
+                    x,
+                    y,
+                    ret.layout().ty,
+                    false,
+                ),
+                ty::Int(_) => crate::base::trans_int_binop(
+                    fx,
+                    bin_op,
+                    x,
+                    y,
+                    ret.layout().ty,
+                    true,
+                ),
+                _ => panic!(),
+            };
+            ret.write_cvalue(fx, res);
+        };
+        powif32, (v x, v y) {
+            crate::trap::trap_unreachable(&mut fx.bcx); // FIXME
+            return;
+        };
+        powif64, (v x, v y) {
+            crate::trap::trap_unreachable(&mut fx.bcx); // FIXME
+            return;
+        };
+        bswap, (v x) {
+            crate::trap::trap_unreachable(&mut fx.bcx); // FIXME
+            return;
+        };
+
         // The only difference between offset and arith_offset is regarding UB. Because Cranelift
         // doesn't have UB both are codegen'ed the same way
         offset | arith_offset, (c base, v offset) {

@@ -1,7 +1,7 @@
 #!/bin/bash
 source config.sh
 
-rm -r target/out || true
+#rm -r target/out || true
 mkdir -p target/out/clif
 
 echo "[BUILD] mini_core"

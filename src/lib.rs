@@ -381,7 +381,9 @@ fn build_isa(sess: &Session) -> Box<isa::TargetIsa + 'static> {
         }
         OptLevel::Less | OptLevel::Default => {}
         OptLevel::Aggressive => {
-            flags_builder.set("opt_level", "best").unwrap();
+        */
+            //flags_builder.set("opt_level", "best").unwrap();
+        /*
         }
         OptLevel::Size | OptLevel::SizeMin => {
             sess.warn("Optimizing for size is not supported. Just ignoring the request");
