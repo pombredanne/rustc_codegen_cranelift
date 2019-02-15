@@ -119,11 +119,6 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
         fx, intrinsic, substs, args,
 
         assume, (c _a) {};
-        arith_offset, (v base, v offset) {
-            let res = fx.bcx.ins().iadd(base, offset);
-            let res = CValue::ByVal(res, ret.layout());
-            ret.write_cvalue(fx, res);
-        };
         likely | unlikely, (c a) {
             ret.write_cvalue(fx, a);
         };
@@ -289,7 +284,10 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
             let res = fx.bcx.ins().rotr(x, y);
             ret.write_cvalue(fx, CValue::ByVal(res, layout));
         };
-        offset, (c base, v offset) {
+
+        // The only difference between offset and arith_offset is regarding UB. Because Cranelift
+        // doesn't have UB both are codegen'ed the same way
+        offset | arith_offset, (c base, v offset) {
             let pointee_ty = base.layout().ty.builtin_deref(true).unwrap().ty;
             let pointee_size = fx.layout_of(pointee_ty).size.bytes();
             let ptr_diff = fx.bcx.ins().imul_imm(offset, pointee_size as i64);
@@ -297,6 +295,7 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
             let res = fx.bcx.ins().iadd(base_val, ptr_diff);
             ret.write_cvalue(fx, CValue::ByVal(res, args[0].layout()));
         };
+
         transmute, <src_ty, dst_ty> (c from) {
             assert_eq!(from.layout().ty, src_ty);
             let addr = from.force_stack(fx);
