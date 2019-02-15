@@ -119,11 +119,6 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
         fx, intrinsic, substs, args,
 
         assume, (c _a) {};
-        arith_offset, (v base, v offset) {
-            let res = fx.bcx.ins().iadd(base, offset);
-            let res = CValue::ByVal(res, ret.layout());
-            ret.write_cvalue(fx, res);
-        };
         likely | unlikely, (c a) {
             ret.write_cvalue(fx, a);
         };
@@ -290,6 +285,14 @@ pub fn codegen_intrinsic_call<'a, 'tcx: 'a>(
             ret.write_cvalue(fx, CValue::ByVal(res, layout));
         };
         offset, (c base, v offset) {
+            let pointee_ty = base.layout().ty.builtin_deref(true).unwrap().ty;
+            let pointee_size = fx.layout_of(pointee_ty).size.bytes();
+            let ptr_diff = fx.bcx.ins().imul_imm(offset, pointee_size as i64);
+            let base_val = base.load_scalar(fx);
+            let res = fx.bcx.ins().iadd(base_val, ptr_diff);
+            ret.write_cvalue(fx, CValue::ByVal(res, args[0].layout()));
+        };
+        arith_offset, (c base, v offset) {
             let pointee_ty = base.layout().ty.builtin_deref(true).unwrap().ty;
             let pointee_size = fx.layout_of(pointee_ty).size.bytes();
             let ptr_diff = fx.bcx.ins().imul_imm(offset, pointee_size as i64);
